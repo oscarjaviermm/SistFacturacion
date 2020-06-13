@@ -1,0 +1,13 @@
+@using SistFacturacion.Models
+
+
+
+<h2>Home</h2>
+<h1>Insert</h1>
+@(Html.DevExtreme().Button()
+    .ID("Facturacion")
+    .Type(ButtonType.Success)
+    .Text("Dummy")
+ )
+<a asp-area="Facturacion" asp-controller="EmpresasPage" asp-action="index">Empresas</a>
+<h1>End</h1>

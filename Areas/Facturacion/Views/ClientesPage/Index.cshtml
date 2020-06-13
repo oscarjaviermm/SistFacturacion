@@ -1,0 +1,64 @@
+﻿@using DevExtreme.AspNet.Mvc;
+@{
+    Layout = "_Layout";
+}
+@{
+    ViewData["Title"] = "Catalogo de Clientes";
+}
+
+@(Html.DevExtreme().SelectBox()
+        .DataSource(ds=> ds.Mvc()
+        .Controller("Empresas")
+        .LoadAction("GetResume")
+        .Key("Pk_Empresa")
+        )
+        .Placeholder("Seleccione la Empresa")
+        .DisplayExpr("Denominacion")
+        .OnValueChanged(@<text>
+        function (data){
+            var dGrid = $("#DGClientes").dxDataGrid("instance");
+            //if (data.value=="" || data.value == null)
+                dGrid.filter (["Pk_Empresa","=",data.value.Pk_Empresa]);
+            }
+        </text>)
+)
+<h2>Series</h2>
+
+@(Html.DevExtreme().DataGrid<SistFacturacion.Areas.Facturacion.Controllers.ClientesViewModel>()
+    .ID("DGClientes")
+        .DataSource(ds => ds.Mvc()
+        .Controller("Clientes")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("Pk_Cliente")
+        )
+    //.FilterValue(new object[] { new Object[] {"Pk_Empresa","=",0 } })
+    .RemoteOperations(true)
+    .NoDataText("Seleccione una empresa para ver sus clientes.")
+    .Columns(columns => {
+
+        columns.AddFor(m => m.Pk_Cliente);
+
+       // columns.AddFor(m => m.Pk_Empresa);
+       columns.Add()
+        .DataField("Pk_Empresa")
+        .Visible(false);
+
+        columns.AddFor(m => m.RazonSocial);
+        columns.AddFor(m => m.Denominacion);
+        columns.AddFor(m => m.RFC);
+        columns.AddFor(m => m.Calle);
+        columns.AddFor(m => m.Exterior);
+        columns.AddFor(m => m.Interior);
+        columns.AddFor(m => m.Colonia);
+        columns.AddFor(m => m.CP);
+    })
+    .Editing(e => e
+        .AllowAdding(true)
+        .AllowUpdating(true)
+        .AllowDeleting(true)
+        .Mode(GridEditMode.Popup)
+    )
+)

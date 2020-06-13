@@ -1,0 +1,61 @@
+﻿@using DevExtreme.AspNet.Mvc;
+@{
+    Layout = "_Layout";
+}
+@{
+    ViewData["Title"] = "Catalogo de Productos / Servicios";
+}
+
+@(Html.DevExtreme().SelectBox()
+        .DataSource(ds=> ds.Mvc()
+        .Controller("Empresas")
+        .LoadAction("GetResume")
+        .Key("Pk_Empresa")
+        )
+        .Placeholder("Seleccione la Empresa")
+        .DisplayExpr("Denominacion")
+        .OnValueChanged(@<text>
+        function (data){
+            var dGrid = $("#DGSeries").dxDataGrid("instance");
+            //if (data.value=="" || data.value == null)
+                dGrid.filter (["Pk_Empresa","=",data.value.Pk_Empresa]);
+            }
+        </text>)
+)
+<h2>Productos / Servicios</h2>
+
+@(Html.DevExtreme().DataGrid<SistFacturacion.Areas.Facturacion.Controllers.CatProdServViewModel>()
+    .DataSource(ds => ds.Mvc()
+        .Controller("CatProdServ")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("Pk_ProductoServicio")
+    )
+    .RemoteOperations(true)
+    .Columns(columns => {
+        columns.AddFor(m => m.Pk_ProductoServicio);
+        columns.AddFor(m => m.Pk_Empresa);
+        columns.AddFor(m => m.Clave_ProdServ_SAT);
+        columns.AddFor(m => m.Clave_Ident);
+        columns.AddFor(m => m.CodigoBarras);
+        columns.AddFor(m => m.Clave_Unidad_SAT);
+        columns.AddFor(m => m.Unidad);
+        columns.AddFor(m => m.Descripcion_ProdServ_Base);
+        columns.AddFor(m => m.PrecioBase);
+        columns.AddFor(m => m.IVAT);
+        columns.AddFor(m => m.IEPST);
+        columns.AddFor(m => m.IVAR);
+        columns.AddFor(m => m.ISRR);
+        columns.AddFor(m => m.IEstatal);
+        columns.AddFor(m => m.OtraRetencion);
+    })
+    .Editing(e => e
+        .AllowAdding(true)
+        .AllowUpdating(true)
+        .AllowDeleting(true)
+        .Mode(GridEditMode.Popup)
+    )
+
+)
